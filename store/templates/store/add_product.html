@@ -16,6 +16,16 @@
                 </div>
 
                 <div class="mb-3">
+                     <label for="id_category" class="form-label">Категория</label>
+                    <select name="category" id="id_category" class="form-select" required>
+                    {% for val, label in CATEGORY_CHOICES %}
+                     <option value="{{ val }}">{{ label }}</option>
+                    {% endfor %}
+                     </select>
+                </div>
+
+
+                <div class="mb-3">
                     <label for="description" class="form-label">Описание</label>
                     <textarea name="description" rows="4" class="form-control" placeholder="Введите описание"></textarea>
                 </div>

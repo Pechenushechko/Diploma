@@ -55,31 +55,35 @@
             С любовью и преданностью, мы развиваем ZooGuru в настоящую экосистему для всех, кто ценит своих пушистых друзей.
         </p>
 
-        <h2 class="mt-5 mb-4">Отзывы наших клиентов</h2>
-
-        <div class="d-flex justify-content-center">
-            <div id="reviewsCarousel" class="carousel slide w-50" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{% static 'images/reviews/review1.jpg' %}" class="d-block" alt="Отзыв 1">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{% static 'images/reviews/review2.jpg' %}" class="d-block" alt="Отзыв 2">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{% static 'images/reviews/review3.jpg' %}" class="d-block" alt="Отзыв 3">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                </button>
-            </div>
+          <!-- Отзывы (мини-карусель) -->
+  <section class="mb-5">
+    <h2 class="mb-4 text-center">Отзывы наших клиентов</h2>
+    <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active text-center px-3">
+          <blockquote class="blockquote">
+            <p>«Большое спасибо ZooGuru за качественные корма и быструю доставку!»</p>
+            <footer class="blockquote-footer">Айдана с собакой Бимом</footer>
+          </blockquote>
         </div>
+        <div class="carousel-item text-center px-3">
+          <blockquote class="blockquote">
+            <p>«Отличный выбор игрушек, питомец доволен, а я счастлив!»</p>
+            <footer class="blockquote-footer">Руслан и кот Мурзик</footer>
+          </blockquote>
+        </div>
+        <!-- Добавь ещё отзывы по желанию -->
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Предыдущий</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Следующий</span>
+      </button>
     </div>
-</div>
+  </section>
 {% endblock %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
