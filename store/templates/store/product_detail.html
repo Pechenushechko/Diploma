@@ -1,0 +1,54 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}{{ product.name }} - ZooGuru{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center align-items-center shadow-lg p-4 rounded bg-light" style="animation: fadeIn 0.5s;">
+        <div class="col-md-5 text-center mb-4 mb-md-0">
+            {% if product.image %}
+                <img src="/media/{{ product.image }}" alt="{{ product.name }}"
+                     class="img-fluid rounded shadow" style="max-height: 400px; object-fit: contain;">
+            {% else %}
+                <img src="{% static 'images/logo.png' %}" alt="No image"
+                     class="img-fluid rounded shadow" style="max-height: 300px;">
+            {% endif %}
+        </div>
+        <div class="col-md-7 d-flex flex-column justify-content-center">
+            <h1 class="mb-3">{{ product.name }}</h1>
+            <p class="lead description-block">{{ product.description|default:"Описание отсутствует." }}</p>
+            <h3 class="text-success fw-bold mb-4">{{ product.price }} ₸</h3>
+            <a href="{% url 'product_list' %}" class="btn btn-outline-primary align-self-start">← Назад к списку товаров</a>
+            {% if user.is_staff %}
+                <div class="mt-3">
+                    <a href="{% url 'edit_product' product.id %}" class="btn btn-warning me-2">Редактировать</a>
+
+                    <form action="{% url 'delete_product' product.id %}" method="POST" style="display:inline-block;">
+                    {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот товар?');">
+                        Удалить
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .description-block {
+        max-height: 250px;
+        overflow-y: auto; 
+        padding-right: 10px; 
+        overflow-wrap: break-word; 
+        word-break: break-word;
+        white-space: pre-wrap; 
+    }
+</style>
+{% endblock %}
+

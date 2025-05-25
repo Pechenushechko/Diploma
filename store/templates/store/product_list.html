@@ -22,7 +22,9 @@
                     <img src="{% static 'images/default.jpg' %}" class="card-img-top" alt="Нет изображения">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
+                    <a href="{% url 'product_detail' product.id %}" class="text-decoration-none">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                    </a>
                     <p class="card-text">{{ product.description }}</p>
                     <p class="card-text fw-bold text-primary">{{ product.price }} ₸</p>
                 </div>
