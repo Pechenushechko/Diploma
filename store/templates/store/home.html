@@ -3,6 +3,12 @@
 {% block title %}ZooGuru — лучший зоомагазин Алматы{% endblock %}
 
 {% block content %}
+{% if request.user.is_authenticated %}
+  <p>Вы вошли как: {{ request.user.username }}</p>
+  <p>Статус администратора: {{ request.user.is_staff }}</p>
+  <div class="mt-3">
+  <a href="/admin" class="btn btn-warning me-2">admin</a>
+{% endif %}
 <div class="container my-5">
 
   <!-- Hero -->

@@ -12,6 +12,8 @@ from .models import CATEGORY_CHOICES
 
 logger = logging.getLogger('product')
 
+# Главная страница
+
 def home(request):
     return render(request, 'store/home.html')
 
