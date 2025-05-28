@@ -152,6 +152,8 @@ def delete_product(request, product_id):
 
     return redirect('product_list')
 
+# Product listing and detail views
+
 def product_list(request):
     category_filter = request.GET.get('category')
     sort = request.GET.get('sort')
