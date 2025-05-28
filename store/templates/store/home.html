@@ -1,0 +1,76 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}ZooGuru — лучший зоомагазин Алматы{% endblock %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+  <p>Вы вошли как: {{ request.user.username }}</p>
+  <p>Статус администратора: {{ request.user.is_staff }}</p>
+  <div class="mt-3">
+  <a href="/admin" class="btn btn-warning me-2">admin</a>
+{% endif %}
+<div class="container my-5">
+
+  <!-- Hero -->
+  <section class="text-center p-5 bg-light rounded shadow mb-5">
+    <img src="{% static 'images/hero-pet.png' %}" alt="ZooGuru" class="img-fluid rounded mb-4" style="max-height: 200px; object-fit: cover;">
+    <h1 class="display-4 fw-bold mb-3">ZooGuru — забота о ваших питомцах начинается здесь</h1>
+    <p class="lead mb-4">Лучшие товары и консультации экспертов для здоровья и счастья ваших любимцев</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">Перейти к товарам</a>
+  </section>
+
+  <!-- Преимущества -->
+  <section class="row text-center mb-5">
+    <div class="col-md-3">
+      <img src="{% static 'icons/quality.svg' %}" alt="Качество" class="mb-3" width="60">
+      <h5>Высокое качество</h5>
+      <p>Только проверенные бренды и товары</p>
+    </div>
+    <div class="col-md-3">
+      <img src="{% static 'icons/delivery.svg' %}" alt="Доставка" class="mb-3" width="60">
+      <h5>Быстрая доставка</h5>
+      <p>По Алматы и окрестностям</p>
+    </div>
+    <div class="col-md-3">
+      <img src="{% static 'icons/expert.svg' %}" alt="Эксперты" class="mb-3" width="60">
+      <h5>Консультации</h5>
+      <p>Наши специалисты всегда помогут</p>
+    </div>
+    <div class="col-md-3">
+      <img src="{% static 'icons/discount.svg' %}" alt="Скидки" class="mb-3" width="60">
+      <h5>Акции и скидки</h5>
+      <p>Для постоянных клиентов</p>
+    </div>
+  </section>
+
+  <!-- Категории -->
+  <section class="mb-5">
+    <h2 class="mb-4 text-center">Популярные категории</h2>
+    <div class="row g-4 justify-content-center">
+      <a href="{% url 'product_list' %}?category=Корма" class="col-6 col-md-3 text-decoration-none">
+        <div class="card shadow-sm text-center p-3">
+          <img src="{% static 'images/category-feed.jpg' %}" alt="Корма" class="card-img-top rounded" style="height: 250px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">Корма</h5>
+          </div>
+        </div>
+      </a>
+      <a href="{% url 'product_list' %}?category=Игрушки" class="col-6 col-md-3 text-decoration-none">
+        <div class="card shadow-sm text-center p-3">
+          <img src="{% static 'images/category-toys.jpg' %}" alt="Игрушки" class="card-img-top rounded" style="height: 250px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">Игрушки</h5>
+          </div>
+        </div>
+      </a>
+      <a href="{% url 'product_list' %}?category=Аксессуары" class="col-6 col-md-3 text-decoration-none">
+        <div class="card shadow-sm text-center p-3">
+          <img src="{% static 'images/category-accessories.jpg' %}" alt="Аксессуары" class="card-img-top rounded" style="height: 250px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">Аксессуары</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+{% endblock %}

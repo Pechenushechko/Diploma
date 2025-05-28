@@ -1,0 +1,90 @@
+{% extends 'store/base.html' %}
+
+{% load static %}
+
+{% block title %}О нас - ZooGuru{% endblock %}
+
+{% block content %}
+<style>
+    .about-section {
+        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .about-section h1 {
+        font-weight: bold;
+        color: #00796b;
+    }
+
+    .about-section p {
+        font-size: 18px;
+        color: #333;
+        line-height: 1.7;
+    }
+
+    .carousel img {
+        max-width: 400px;
+        max-height: 300px;
+        object-fit: cover;
+        margin: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(0,0,0,0.4);
+        border-radius: 50%;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="about-section text-center">
+        <h1 class="mb-4">О нас</h1>
+        <p class="mb-3">
+            <strong>ZooGuru</strong> — это не просто зоомагазин, это место, где каждое животное чувствует себя любимым.
+        </p>
+        <p class="mb-3">
+            С момента открытия в Алматы, наша миссия — обеспечить владельцев питомцев лучшими товарами и искренней заботой. 
+            У нас вы найдете всё: от вкусных кормов и игрушек до профессиональных аксессуаров и ветеринарной косметики.
+        </p>
+        <p class="mb-3">
+            Мы гордимся тем, что каждый клиент возвращается к нам снова, зная, что его питомцу здесь рады. 
+            С любовью и преданностью, мы развиваем ZooGuru в настоящую экосистему для всех, кто ценит своих пушистых друзей.
+        </p>
+
+          <!-- Отзывы (мини-карусель) -->
+  <section class="mb-5">
+    <h2 class="mb-4 text-center">Отзывы наших клиентов</h2>
+    <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active text-center px-3">
+          <blockquote class="blockquote">
+            <p>«Большое спасибо ZooGuru за качественные корма и быструю доставку!»</p>
+            <footer class="blockquote-footer">Айдана с собакой Бимом</footer>
+          </blockquote>
+        </div>
+        <div class="carousel-item text-center px-3">
+          <blockquote class="blockquote">
+            <p>«Отличный выбор игрушек, питомец доволен, а я счастлив!»</p>
+            <footer class="blockquote-footer">Руслан и кот Мурзик</footer>
+          </blockquote>
+        </div>
+        <!-- Добавь ещё отзывы по желанию -->
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Предыдущий</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Следующий</span>
+      </button>
+    </div>
+  </section>
+{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+

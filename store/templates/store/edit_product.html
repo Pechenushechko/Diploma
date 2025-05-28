@@ -1,0 +1,62 @@
+{% extends 'store/base.html' %}
+{% block title %}Редактировать {{ product.name }} - ZooGuru{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Редактировать товар</h1>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="mx-auto shadow p-4 rounded bg-light" style="max-width: 700px;">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="name" class="form-label fw-semibold">Название</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label fw-semibold">Описание</label>
+            <textarea class="form-control" id="description" name="description" rows="4">{{ product.description }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label fw-semibold">Цена</label>
+            <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ product.price }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label fw-semibold">Категория</label>
+            <select name="category" id="category" class="form-select" required>
+                {% for cat, label in category_choices %}
+                    <option value="{{ cat }}" {% if product.category == cat %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Текущее изображение</label><br>
+            {% if product.image %}
+                <img src="/media/{{ product.image }}" alt="{{ product.name }}" class="img-thumbnail mb-2" style="max-height: 200px;">
+            {% else %}
+                <p class="text-muted">Изображение отсутствует</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <label for="image" class="form-label fw-semibold">Загрузить новое изображение (необязательно)</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-success px-4">💾 Сохранить</button>
+            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-secondary px-4">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+

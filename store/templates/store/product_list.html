@@ -1,0 +1,69 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Товары - ZooGuru{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    {% if user.is_staff %}
+                <div class="mt-3">
+                    <a href="{% url 'add_product' %}" class="btn btn-success">Добавить товар</a>
+    {% endif %}
+                
+    <h1 class="mb-4 text-center">Каталог товаров</h1>
+
+    <!-- Фильтрация и поиск -->
+    <form method="GET" class="row g-3 justify-content-center mb-4">
+        <div class="col-md-4">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Поиск по названию...">
+        </div>
+
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">Все категории</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="sort" class="form-select">
+                <option value="">Сортировка</option>
+                <option value="price_asc" {% if selected_sort == 'price_asc' %}selected{% endif %}>Сначала дешёвые</option>
+                <option value="price_desc" {% if selected_sort == 'price_desc' %}selected{% endif %}>Сначала дорогие</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Применить</button>
+        </div>
+    </form>
+
+    <!-- Список товаров -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    {% if product.image %}
+                        <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: contain;">
+                    {% else %}
+                        <img src="{% static 'images/logo.png' %}" class="card-img-top" alt="Нет изображения" style="height: 200px;">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="text-muted mb-1">{{ product.category }}</p>
+                        <p class="text-success fw-bold mb-3">{{ product.price }} ₸</p>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary mt-auto">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">Нет товаров по заданным критериям.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+
