@@ -17,6 +17,8 @@ logger = logging.getLogger('product')
 def home(request):
     return render(request, 'store/home.html')
 
+# Страницы о магазине и контакты
+
 def about(request):
     return render(request, 'store/about.html')
 
