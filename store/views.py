@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import JsonResponse, Http404
+from django.views.decorators.csrf import csrf_exempt
+import json
 import logging
 from .forms import ProductForm
-from .models import Product, ProductLog
+from .models import Product, ProductLog, Order, OrderItem
 from datetime import datetime
 from django.core.files.storage import default_storage
-from django.http import Http404
 from mongoengine.errors import DoesNotExist
-from .models import CATEGORY_CHOICES
+from .models import CATEGORY_CHOICES, ORDER_STATUSES
 
 logger = logging.getLogger('product')
 
@@ -125,9 +127,6 @@ def edit_product(request, product_id):
         }
     })
 
-
-
-
 @staff_member_required
 @require_POST
 def delete_product(request, product_id):
@@ -188,4 +187,129 @@ def product_detail(request, product_id):
         return render(request, 'store/product_not_found.html', status=404)
     
     return render(request, 'store/product_detail.html', {'product': product})
+
+@require_POST
+def add_to_cart(request, product_id):
+    qty = int(request.POST.get('quantity', 1))
+    cart = get_cart(request)  # <-- теперь всегда словарь
+    cart[product_id] = cart.get(product_id, 0) + qty
+    save_cart(request, cart)
+    return redirect('product_list')
+
+@require_POST
+def update_cart(request, product_id):
+    qty = int(request.POST.get('quantity', 1))
+    cart = get_cart(request)
+    if qty <= 0:
+        cart.pop(product_id, None)
+    else:
+        cart[product_id] = qty
+    save_cart(request, cart)
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+def remove_from_cart(request, product_id):
+    cart = get_cart(request)
+    if product_id in cart:
+        cart.pop(product_id)
+    save_cart(request, cart)
+    return JsonResponse({'status': 'ok'})
+
+def get_cart(request):
+    cart = request.session.get('cart', {})
+    if not isinstance(cart, dict):
+        # если по ошибке записан список — сбрасываем корзину
+        cart = {}
+    return cart
+
+def save_cart(request, cart):
+    request.session['cart'] = cart
+    request.session.modified = True
+
+def cart_view(request):
+    cart = get_cart(request)
+    products = []
+    total = 0
+    for prod_id, qty in cart.items():
+        try:
+            product = Product.objects.get(id=prod_id)
+            subtotal = product.price * qty
+            products.append({
+                'product': product,
+                'quantity': qty,
+                'subtotal': subtotal,
+            })
+            total += subtotal
+        except DoesNotExist:
+            continue
+
+    if request.method == 'POST':
+        # Оформление заказа
+        full_name = request.POST.get('full_name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+
+        if not (full_name and phone and address):
+            return render(request, 'store/cart.html', {
+                'products': products,
+                'total': total,
+                'error': 'Пожалуйста, заполните все поля для оформления заказа.',
+            })
+
+        # Формируем список OrderItem
+        items = []
+        for p in products:
+            items.append(OrderItem(
+                product_id=p['product'].id,
+                name=p['product'].name,
+                price=p['product'].price,
+                quantity=p['quantity']
+            ))
+
+        order = Order(
+            user_id=str(request.user.id) if request.user.is_authenticated else None,
+            items=items,
+            full_name=full_name,
+            phone=phone,
+            address=address,
+            total_price=total,
+        )
+        order.save()
+
+        # Очистить корзину после оформления
+        save_cart(request, {})
+
+        return render(request, 'store/cart.html', {
+            'products': [],
+            'total': 0,
+            'success': 'Заказ успешно оформлен! Спасибо за покупку.',
+        })
+
+    return render(request, 'store/cart.html', {
+        'products': products,
+        'total': total,
+    })
+
+@staff_member_required
+def order_list(request):
+    orders = Order.objects.order_by('-created_at')
+    return render(request, 'store/order_list.html', {
+        'orders': orders,
+        'statuses': ORDER_STATUSES
+    })
+
+@staff_member_required
+def update_order_status(request, order_id):
+    order = Order.objects.get(id=order_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['Новый', 'В обработке', 'Доставлен', 'Отменён']:
+            order.status = new_status
+            order.save()
+    return redirect('order_list')
+
+
+# def reset_cart(request):
+#     request.session['cart'] = {}
+#     return JsonResponse({'status': 'cart cleared'})
 

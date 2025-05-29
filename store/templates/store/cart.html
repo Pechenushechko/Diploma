@@ -1,0 +1,130 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+ <div class="container my-5">
+    <h1>Ваша корзина</h1>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
+    {% if products %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Итого</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in products %}
+                <tr data-product-id="{{ item.product.id }}">
+                    <td>{{ item.product.name }}</td>
+                    <td>
+                        <input type="number" class="form-control quantity-input" min="1" value="{{ item.quantity }}" style="width: 80px;">
+                    </td>
+                    <td>{{ item.product.price }} ₸</td>
+                    <td class="subtotal">{{ item.subtotal }} ₸</td>
+                    <td><button class="btn btn-danger btn-sm remove-btn">Удалить</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4>Общая сумма: <span id="total">{{ total }}</span> ₸</h4>
+
+        <h2>Оформление заказа</h2>
+        <form method="POST" id="order-form">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="full_name" class="form-label">Имя</label>
+                <input type="text" name="full_name" id="full_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Телефон</label>
+                <input type="text" name="phone" id="phone" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Адрес доставки</label>
+                <textarea name="address" id="address" class="form-control" rows="2" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Оформить заказ</button>
+        </form>
+
+    {% else %}
+        <p>Корзина пуста.</p>
+    {% endif %}
+</div>
+
+<script>
+    const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Обновление количества
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', () => {
+            const tr = input.closest('tr');
+            const productId = tr.getAttribute('data-product-id');
+            const quantity = input.value;
+
+            fetch(`/cart/update/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `quantity=${quantity}`
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'ok') location.reload();
+              });
+        });
+    });
+
+    // Удаление товара
+    document.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const tr = button.closest('tr');
+            const productId = tr.getAttribute('data-product-id');
+
+            fetch(`/cart/remove/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'ok') location.reload();
+              });
+        });
+    });
+
+    // Оформление заказа (отправка формы через POST)
+    document.getElementById('order-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: formData,
+        }).then(response => response.text())
+          .then(html => {
+              document.querySelector('.container').innerHTML = new DOMParser().parseFromString(html, 'text/html').querySelector('.container').innerHTML;
+          });
+
+       
+    });
+});
+</script>
+{% endblock %}
+
+{% load static %}
