@@ -18,3 +18,8 @@
 [2025-05-25 19:37:18,696] INFO product: User: admin Add product: ad (ID: 68332b1e356328cbc84a8b25)
 [2025-05-25 19:41:12,438] INFO product: User admin updated product: ad (ID: 68332b1e356328cbc84a8b25)
 [2025-05-25 19:41:19,494] INFO product: User admin updated product: Кошачий корм Wiskas (ID: 683320e064d95198118dbd6b)
+[2025-05-29 19:59:54,278] INFO product: User: admin Add product: Wiskas (ID: 68387669f94ac3e51aea4316)
+[2025-05-29 21:17:48,859] INFO product: User: admin Add product: asd (ID: 683888acde9b80b8d3df6484)
+[2025-05-29 21:18:11,823] INFO product: User: admin Add product: asd (ID: 683888c3de9b80b8d3df6486)
+[2025-05-29 21:18:33,822] INFO product: User: admin Add product: asd (ID: 683888d9de9b80b8d3df6488)
+[2025-05-29 21:19:40,388] INFO product: User: admin Add product: Кошачий корм Wiskas для лысых котов (ID: 6838891cde9b80b8d3df648a)
