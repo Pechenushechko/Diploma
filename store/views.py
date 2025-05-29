@@ -8,11 +8,15 @@ import logging
 from .forms import ProductForm
 from .models import Product, ProductLog, Order, OrderItem
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from django.core.files.storage import default_storage
 from mongoengine.errors import DoesNotExist
 from .models import CATEGORY_CHOICES, ORDER_STATUSES
 
 logger = logging.getLogger('product')
+
+def almaty_now():
+    return datetime.now(ZoneInfo("Asia/Almaty"))
 
 # Главная страница
 
@@ -52,7 +56,7 @@ def add_product(request):
                 product_id=str(product.id),
                 action='created',
                 user=str(request.user),
-                timestamp=datetime.utcnow(),
+                timestamp=almaty_now(),
                 details=f'Создан товар: {product.name}'
             ).save()
 
@@ -107,7 +111,7 @@ def edit_product(request, product_id):
             product_id=str(product.id),
             action='updated',
             user=str(request.user),
-            timestamp=datetime.utcnow(),
+            timestamp=almaty_now(),
             details=f'Изменён товар: {product.name}'
         ).save()
 
@@ -143,7 +147,7 @@ def delete_product(request, product_id):
         product_id=str(product_id),
         action='deleted',
         user=str(request.user),
-        timestamp=datetime.utcnow(),
+        timestamp=almaty_now(),
         details=f'Удалён товар: {product_name}'
     ).save()
 
