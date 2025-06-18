@@ -10,10 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-m&+*&i+aqlgrk9c#ode02_ty00&836gnr53_m)s-z(l-@0ky#-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = os.environ.get('DEBUG') == 'False'
-ALLOWED_HOSTS = ['*']
+DEBUG = True
 
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 TIME_ZONE = "Asia/Almaty"
 USE_TZ = True
@@ -58,7 +57,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,6 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+TIME_ZONE = 'UTC'
+
 USE_I18N = True
 
 USE_TZ = True
@@ -136,7 +136,6 @@ import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # Static files (CSS, JavaScript, Images)
