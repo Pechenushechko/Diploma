@@ -1,5 +1,6 @@
 from mongoengine import Document, StringField, DecimalField, DateTimeField, ListField, FloatField, EmbeddedDocument, fields, ReferenceField, IntField, CASCADE
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 CATEGORY_CHOICES = [
     ('Корма', 'Корма'),
@@ -11,6 +12,9 @@ CATEGORY_CHOICES = [
 ]
 
 ORDER_STATUSES = ['Новый', 'В обработке', 'Доставлен', 'Отменён']
+
+def almaty_now():
+    return datetime.now(ZoneInfo("Asia/Almaty"))
 
 class Product(Document): 
     name = StringField(required=True)
@@ -37,7 +41,7 @@ class ProductLog(Document):
     product_id = StringField()
     action = StringField(choices=['created', 'updated', 'deleted'])
     user = StringField()
-    timestamp = DateTimeField(default=datetime.utcnow)
+    timestamp = DateTimeField(default=almaty_now)
     details = StringField()
 
     meta = {
@@ -59,7 +63,7 @@ class Order(Document):
     address = fields.StringField(required=True)
     total_price = FloatField(default=0)
     status = fields.StringField(choices= ORDER_STATUSES, default='Новый')
-    created_at = fields.DateTimeField(default=datetime.utcnow)
+    created_at = fields.DateTimeField(default=almaty_now)
 
     def calculate_total(self):
         self.total_price = sum(item.price * item.quantity for item in self.items)

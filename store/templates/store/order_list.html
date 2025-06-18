@@ -10,7 +10,7 @@
                 <h5 class="card-title">Заказ от {{ order.full_name }}</h5>
                 <p><strong>Телефон:</strong> {{ order.phone }}</p>
                 <p><strong>Адрес:</strong> {{ order.address }}</p>
-                <p><strong>Дата:</strong> {{ order.created_at }}</p>
+                <p><strong>Дата:</strong> {{  order.created_at }}</p>
                 <p><strong>Товары:</strong></p>
                 <ul>
                     {% for item in order.items %}
