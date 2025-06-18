@@ -12,7 +12,8 @@ SECRET_KEY = 'django-insecure-m&+*&i+aqlgrk9c#ode02_ty00&836gnr53_m)s-z(l-@0ky#-
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG') == 'False'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = ['*']
+
 
 TIME_ZONE = "Asia/Almaty"
 USE_TZ = True
