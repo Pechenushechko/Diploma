@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DecimalField, DateTimeField, ListField, FloatField, EmbeddedDocument, fields
+from mongoengine import Document, StringField, DecimalField, DateTimeField, ListField, FloatField, EmbeddedDocument, fields, ReferenceField, IntField, CASCADE
 from datetime import datetime
 
 CATEGORY_CHOICES = [
@@ -23,6 +23,15 @@ class Product(Document):
         'collection': 'products',
         'abstract' : False
     }
+
+class Review(Document):
+    product = ReferenceField(Product, reverse_delete_rule=CASCADE)
+    session_key = StringField(required=True)
+    rating = IntField(min_value=1, max_value=5, required=True)
+    comment = StringField(max_length=1000)
+    created_at = DateTimeField(default=datetime.utcnow)
+
+    meta = {'ordering': ['-created_at']}
 
 class ProductLog(Document):
     product_id = StringField()

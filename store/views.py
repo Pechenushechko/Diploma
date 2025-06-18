@@ -3,13 +3,17 @@ from django.views.decorators.http import require_POST
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
-import json
+from django.contrib import messages
+from django.http import HttpResponseForbidden
 import logging
+from bson import ObjectId
+
 from .forms import ProductForm
-from .models import Product, ProductLog, Order, OrderItem
+from .models import Product, ProductLog, Order, OrderItem, Review
 from datetime import datetime
 from django.core.files.storage import default_storage
 from mongoengine.errors import DoesNotExist
+from django.shortcuts import get_object_or_404
 from .models import CATEGORY_CHOICES, ORDER_STATUSES
 
 logger = logging.getLogger('product')
@@ -184,6 +188,21 @@ def product_detail(request, product_id):
     except DoesNotExist:
         return render(request, 'store/product_not_found.html', status=404)
     
+    reviews = Review.objects(product=product)
+
+    session_key = request.session.session_key
+    if not session_key:
+        request.session.create()
+        session_key = request.session.session_key
+
+    user_review = Review.objects(product=product, session_key=session_key).first()
+    context = {
+        'product': product,
+        'reviews': reviews,
+        'user_review': user_review,
+        'user_has_reviewed': bool(user_review),
+    }
+    return render(request, 'store/product_detail.html', context)
     return render(request, 'store/product_detail.html', {'product': product})
 
 @require_POST
@@ -306,6 +325,66 @@ def update_order_status(request, order_id):
             order.save()
     return redirect('order_list')
 
+def add_review(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+    except DoesNotExist:
+        return render(request, 'store/product_not_found.html', status=404)
+   
+    # Убедимся, что у сессии есть ключ
+    if not request.session.session_key:
+        request.session.create()
+
+    session_key = request.session.session_key
+
+    # Проверка: уже оставлял отзыв?
+    existing = Review.objects(product=product, session_key=session_key).first()
+    if existing:
+        # Можно обновить или отклонить
+        return redirect('product_detail', product_id=product_id)
+
+    rating = int(request.POST.get('rating'))
+    comment = request.POST.get('comment')
+
+    Review(
+        product=product,
+        session_key=session_key,
+        rating=rating,
+        comment=comment
+    ).save()
+
+    return redirect('product_detail', product_id=product_id)
+
+@require_POST
+def delete_review(request, product_id, review_id):
+    try:
+        review = Review.objects.get(id=ObjectId(review_id))
+    except DoesNotExist:
+        return redirect('product_detail', product_id=product_id)
+
+    # Проверка авторства по ключу сессии
+    if review.session_key != request.session.session_key:
+        return redirect('product_detail', product_id=product_id)
+
+    review.delete()
+    return redirect('product_detail', product_id=product_id)
+
+
+def edit_review(request, review_id):
+   def edit_review(request, product_id, review_id):
+    review = get_object_or_404(Review, id=ObjectId(review_id))
+
+    if review.session_key != request.session.session_key:
+        return HttpResponseForbidden("Недоступно")
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        review.rating = int(data.get('rating', review.rating))
+        review.comment = data.get('comment', review.comment)
+        review.save()
+        return JsonResponse({'success': True})
+
+    return JsonResponse({'error': 'Invalid method'}, status=400)
 
 # def reset_cart(request):
 #     request.session['cart'] = {}
